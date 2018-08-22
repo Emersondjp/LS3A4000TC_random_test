@@ -4,7 +4,7 @@
 
 CC=g++
 CFLAGS=-O1 -g -Wno-write_strings
-#CFLAGS+=-DDEBUG
+CFLAGS+=-DDUMP_MEM
 OBJS=str2num.o gs_memory_class.o gs_memory_test.o
 LDFLAGS=-g
 

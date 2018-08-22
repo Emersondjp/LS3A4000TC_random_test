@@ -184,6 +184,8 @@ class gs_cam_464v_64x64_1wrs : public gs_memory{
     bool write();
     bool read();
     uint64_t get_out();
+    uint64_t get_match();
+    bool     get_hit();
     void dump();
 }; // end of gs_cam_464v_64x64_1wrs
 
@@ -199,13 +201,13 @@ class gs_cam_btb_30x96_1wrs : public gs_memory{
     bool hit;
     bool check( const bool se, const uint32_t svpn,
         const uint32_t valid31_00, const uint32_t valid63_32, const uint32_t valid95_64,
-        const bool re, const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
+        const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
         const uint32_t addr95_64, const uint32_t wvpn, const uint64_t data );
   public:
     gs_cam_btb_30x96_1wrs(const uint32_t vpn=0x00ul, const uint64_t data=0x00ull);
     bool operate( const bool se, const uint32_t svpn,
         const uint32_t valid31_00, const uint32_t valid63_32, const uint32_t valid95_64,
-        const bool re, const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
+        const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
         const uint32_t addr95_64, const uint64_t data, const uint32_t wvpn );
     bool memset(const uint32_t vpn=0x00ull, const uint64_t data=0x00ull);
     bool write();

@@ -429,18 +429,18 @@ bool gs_cp0q_ram_64x128_3sw5sr::operate(
       if(we2 & (0x01ull<<i)){
         //Write according to mask
         uint16_t mask = this->mask[i];
-        uint8_t tmp_1 = 0x00u, tmp_2 = 0x00u;
-        uint8_t tmp_3 = 0x00u, tmp_4 = 0x00u;
+        uint64_t tmp_1 = 0x00ull, tmp_2 = 0x00ull;
+        uint64_t tmp_3 = 0x00ull, tmp_4 = 0x00ull;
         for(int j=0; j<8; j++){
           if(mask&(0x01u<<j)){
-            tmp_1 += ( wvalue0_L & (0xffull<<(j*8)) );
+            tmp_1 += ( wvalue0_L      & (0xffull<<(j*8)) );
           } else {
-            tmp_2 += ( wvalue0_L & (0xffull<<(j*8)) );
+            tmp_2 += ( this->mem_L[i] & (0xffull<<(j*8)) );
           }
           if(mask&(0x01u<<(j+8))){
-            tmp_3 += ( wvalue0_H & (0xffull<<(j*8)) );
+            tmp_3 += ( wvalue0_H      & (0xffull<<(j*8)) );
           } else {
-            tmp_4 += ( wvalue0_H & (0xffull<<(j*8)) );
+            tmp_4 += ( this->mem_H[i] & (0xffull<<(j*8)) );
           }
         }
         this->mem_L[i] = tmp_1 + tmp_2;
@@ -650,6 +650,10 @@ uint64_t gs_cp0q_ram_48x64_2sw5sr::get_out3(){
   return this->out3;
 }
 
+uint64_t gs_cp0q_ram_48x64_2sw5sr::get_out4(){
+  return this->out4;
+}
+
 void gs_cp0q_ram_48x64_2sw5sr::dump(){
   uint16_t d0, d1, d2, d3;
   uint64_t d64;
@@ -754,6 +758,18 @@ bool gs_cam_464v_64x64_1wrs::memset( uint64_t vpn, uint32_t mask, uint16_t asid,
   return true;
 }
 
+uint64_t gs_cam_464v_64x64_1wrs::get_out(){
+  return this->out;
+}
+
+uint64_t gs_cam_464v_64x64_1wrs::get_match(){
+  return this->match;
+}
+
+bool gs_cam_464v_64x64_1wrs::get_hit(){
+  return this->hit;
+}
+
 void gs_cam_464v_64x64_1wrs::dump(){
   uint16_t d0, d1, d2, d3;
   uint64_t d64;
@@ -791,7 +807,7 @@ gs_cam_btb_30x96_1wrs::gs_cam_btb_30x96_1wrs( uint32_t vpn, uint64_t data){
 
 bool gs_cam_btb_30x96_1wrs::check( bool se, uint32_t svpn,
     uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,
-    bool re, bool we, uint32_t addr31_00, uint32_t addr63_32,
+    bool we, uint32_t addr31_00, uint32_t addr63_32,
     uint32_t addr95_64, uint32_t wvpn, uint64_t data ){
 
   bool flag=false;
@@ -809,7 +825,6 @@ bool gs_cam_btb_30x96_1wrs::check( bool se, uint32_t svpn,
       else flag=true;
     }
   }
-  if( se && re ) return false;
   if( se && we ){
     if( addr31_00 & valid31_00  ) return false;
     if( addr63_32 & valid63_32  ) return false;
@@ -822,9 +837,9 @@ bool gs_cam_btb_30x96_1wrs::check( bool se, uint32_t svpn,
 }
 
 bool gs_cam_btb_30x96_1wrs::operate( bool se, uint32_t svpn, uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,
-    bool re, bool we, uint32_t addr31_00, uint32_t addr63_32, uint32_t addr95_64, uint64_t data, uint32_t wvpn ){
+    bool we, uint32_t addr31_00, uint32_t addr63_32, uint32_t addr95_64, uint64_t data, uint32_t wvpn ){
 
-  if( not this->check( se, svpn, valid31_00, valid63_32, valid95_64, re, we,
+  if( not this->check( se, svpn, valid31_00, valid63_32, valid95_64, we,
         addr31_00, addr63_32, addr95_64, wvpn, data ) ) return false;
 
   int myaddr = 0;
@@ -837,8 +852,6 @@ bool gs_cam_btb_30x96_1wrs::operate( bool se, uint32_t svpn, uint32_t valid31_00
     this->cam[myaddr] = wvpn;
     this->ram[myaddr] = data;
   }
-
-  if(re) this->out = this->ram[myaddr];
 
   bool flag=false;
   int  match_addr=-1;
@@ -929,8 +942,8 @@ uint32_t gs_cam_btb_30x96_1wrs::get_match95_64(){
 
 void gs_cam_btb_30x96_1wrs::dump(){
   uint16_t d0, d1, d2, d3;
-  uint32_t d64;
-  printf("\n\n--------------Begin of CAM_464V dump--------------\n");
+  uint64_t d64;
+  printf("\n\n--------------Begin of CAM_BTB dump---------------\n");
   for(int i=0; i<96; i++){
     d64 = this->cam[i];
     d0 = (d64 & 0x000000000000ffffull) >>  0;
@@ -941,11 +954,12 @@ void gs_cam_btb_30x96_1wrs::dump(){
     d0 = (d64 & 0x000000000000ffffull) >>  0;
     d1 = (d64 & 0x00000000ffff0000ull) >> 16;
     d2 = (d64 & 0x0000ffff00000000ull) >> 32;
-    d3 = (d64 & 0xffff000000000000ull) >> 48;
-    printf("%04x %04x %04x %04x .\n", d3, d2, d1, d0);
+    //d3 = (d64 & 0xffff000000000000ull) >> 48;
+    //printf("%04x %04x %04x %04x .\n", d3, d2, d1, d0);
+    printf("%04x %04x %04x .\n", d2, d1, d0);
   }
   fflush(stdout);
-  printf("---------------End of CAM_464V dump---------------\n\n");
+  printf("---------------End of CAM_BTB dump----------------\n\n");
 }
 
 // End of gs_cam_btb_30x96_1wrs
