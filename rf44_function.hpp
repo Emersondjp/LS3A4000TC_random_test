@@ -40,4 +40,9 @@ void rf44_print_vec( int index, const tb_rf4w4r_in_t &pat, const tb_rf4w4r_out_t
    * Print vector information.
    */
 
+void rf44_print_vec2( int index, const tb_rf4w4r_in_t &pat, const tb_rf4w4r_out_t &gld );
+  /*
+   * Print vector information.
+   */
+
 #endif

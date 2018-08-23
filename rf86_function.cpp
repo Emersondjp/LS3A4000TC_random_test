@@ -222,6 +222,21 @@ void rf86_print_vec( int index, const tb_rf8w6r_in_t &pat, const tb_rf8w6r_out_t
   }
 }
 
+void rf86_print_vec2( int index, const tb_rf8w6r_in_t &pat, const tb_rf8w6r_out_t &gld ){
+  /*
+ * Print vector information.
+ */
+  printf("Index %04d : \n", index);
+  for(int i=RF86_WPORT_MIN; i<=RF86_WPORT_MAX; i++){
+    printf("    wen%d -> %d, waddr%d -> 0x%02X, wdata%d -> %#018lX;\n", i, bool(pat.wen7_0&(0x1<<i)), i, pat.waddr[i], i, pat.d[i]);
+  }
+
+  printf("    compare_mask -> %016lX.\n", pat.cmp_mask);
+  for(int i=RF86_RPORT_MIN; i<=RF86_RPORT_MAX; i++){
+    printf("    ren%d -> %d, raddr%d -> 0x%02X, expt_d%d -> %#018lX;\n", i, bool(pat.ren5_0&(0x1<<i)),  i, pat.raddr[i], i, gld.q[i]);
+  }
+}
+
 void rf86_print_cfg(uint32_t cfg){
   /*
  * Print Configuration Code of 8W6R

@@ -59,6 +59,10 @@ void rf86_print_vec( const int index, const tb_rf8w6r_in_t &pat, const tb_rf8w6r
   /*
  * Print vector information.
  */
+void rf86_print_vec2( const int index, const tb_rf8w6r_in_t &pat, const tb_rf8w6r_out_t &gld );
+  /*
+ * Print vector information.
+ */
 void rf86_print_cfg(const uint32_t cfg);
   /*
  * Print Configuration Code of 8W6R

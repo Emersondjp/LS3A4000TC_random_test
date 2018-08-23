@@ -180,3 +180,21 @@ void rf44_print_vec( int index, const tb_rf4w4r_in_t &pat, const tb_rf4w4r_out_t
   fflush(stdout);
 }
 
+void rf44_print_vec2( int index, const tb_rf4w4r_in_t &pat, const tb_rf4w4r_out_t &gld ){
+  /*
+   * Print vector information.
+   */
+  printf("Index %04d : \n", index);
+  printf(" wen0=%d, waddr0=%#04X, input_data0=%#018lX;\n", pat.wen3_0&(0x1<<0)?1:0, pat.waddr[0], pat.d[0] );
+  printf(" wen1=%d, waddr1=%#04X, input_data1=%#018lX;\n", pat.wen3_0&(0x1<<1)?1:0, pat.waddr[1], pat.d[1] );
+  printf(" wen2=%d, waddr2=%#04X, input_data2=%#018lX;\n", pat.wen3_0&(0x1<<2)?1:0, pat.waddr[2], pat.d[2] );
+  printf(" wen3=%d, waddr3=%#04X, input_data3=%#018lX;\n", pat.wen3_0&(0x1<<3)?1:0, pat.waddr[3], pat.d[3] );
+
+  printf("  ren0=%d, raddr0=%#04X, expected_data0=%#018lX;\n", pat.ren3_0&(0x1<<0)?1:0, pat.raddr[0], gld.q[0] );
+  printf("  ren1=%d, raddr1=%#04X, expected_data1=%#018lX;\n", pat.ren3_0&(0x1<<1)?1:0, pat.raddr[1], gld.q[1] );
+  printf("  ren2=%d, raddr2=%#04X, expected_data2=%#018lX;\n", pat.ren3_0&(0x1<<2)?1:0, pat.raddr[2], gld.q[2] );
+  printf("  ren3=%d, raddr3=%#04X, expected_data3=%#018lX;\n", pat.ren3_0&(0x1<<3)?1:0, pat.raddr[3], gld.q[3] );
+
+  fflush(stdout);
+}
+
