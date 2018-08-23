@@ -158,8 +158,10 @@ bool gs_regfile_128x64_8sw6sr::write(){
   return false;
 }
 
-bool gs_regfile_128x64_8sw6sr::read(){
-  return false;
+bool gs_regfile_128x64_8sw6sr::read(const uint8_t addr){
+  return this->operate( false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0,
+      false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0,
+      true, addr, true, addr, true, addr, true, addr, true, addr, true, addr);
 }
 
 uint64_t gs_regfile_128x64_8sw6sr::get_out0(){
@@ -286,8 +288,9 @@ bool gs_regfile_128x64_4sw4sr::write(){
   return false;
 }
 
-bool gs_regfile_128x64_4sw4sr::read(){
-  return false;
+bool gs_regfile_128x64_4sw4sr::read(uint8_t addr){
+  return this->operate(false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0,
+      true, addr, true, addr, true, addr, true, addr);
 }
 
 uint64_t gs_regfile_128x64_4sw4sr::get_out0(){
@@ -346,14 +349,14 @@ bool gs_cp0q_ram_64x128_3sw5sr::check(
     bool re0, uint8_t rad0, bool re1, uint8_t rad1, bool re2, uint8_t rad2,
     bool re3, uint8_t rad3, bool re4, uint8_t rad4 ){
 
-  if( we0 && wad0 > 0x7F ) return false;
-  if( we1 && wad1 > 0x7F ) return false;
+  if( we0 && wad0 > 0x3F ) return false;
+  if( we1 && wad1 > 0x3F ) return false;
 
-  if( re0 && rad0 > 0x7F ) return false;
-  if( re1 && rad1 > 0x7F ) return false;
-  if( re2 && rad2 > 0x7F ) return false;
-  if( re3 && rad3 > 0x7F ) return false;
-  if( re4 && rad4 > 0x7F ) return false;
+  if( re0 && rad0 > 0x3F ) return false;
+  if( re1 && rad1 > 0x3F ) return false;
+  if( re2 && rad2 > 0x3F ) return false;
+  if( re3 && rad3 > 0x3F ) return false;
+  if( re4 && rad4 > 0x3F ) return false;
 
 #ifndef CP35_STRICT_OFF
   if( re0 ){
@@ -361,12 +364,14 @@ bool gs_cp0q_ram_64x128_3sw5sr::check(
     if( re2 && ( rad0 == rad2 ) ) return false;
     if( re3 && ( rad0 == rad3 ) ) return false;
     if( re4 && ( rad0 == rad4 ) ) return false;
+    //if( we2 & ( 0x01ull<<rad0 ) ) return false;
   }
 
   if( re1 ){
     if( re2 && ( rad1 == rad2 ) ) return false;
     if( re3 && ( rad1 == rad3 ) ) return false;
     if( re4 && ( rad1 == rad4 ) ) return false;
+    //if( we2 & ( 0x01ull<<rad1 ) ) return false;
   }
 
   if( re2 ){
@@ -404,8 +409,8 @@ bool gs_cp0q_ram_64x128_3sw5sr::check(
 }
 
 bool gs_cp0q_ram_64x128_3sw5sr::operate(
-    bool we0, uint8_t wad0, uint64_t wvalue0_L, uint64_t wvalue0_H, uint16_t wmask0,
-    bool we1, uint8_t wad1, uint64_t wvalue1_L, uint64_t wvalue1_H, uint16_t wmask1,
+    bool we0, uint8_t wad0, uint64_t wvalue0_L, uint64_t wvalue0_H, uint32_t wmask0,
+    bool we1, uint8_t wad1, uint64_t wvalue1_L, uint64_t wvalue1_H, uint32_t wmask1,
     uint64_t we2,
     bool re0, uint8_t rad0, bool re1, uint8_t rad1, bool re2, uint8_t rad2,
     bool re3, uint8_t rad3, bool re4, uint8_t rad4 ){
@@ -480,6 +485,16 @@ bool gs_cp0q_ram_64x128_3sw5sr::memset(uint16_t mask, uint64_t val_L, uint64_t v
     this->mem_H[i] = val_H;
     this->mask[i]  = mask;
   }
+  this->out0_L = val_L;
+  this->out0_H = val_H;
+  this->out1_L = val_L;
+  this->out1_H = val_H;
+  this->out2_L = val_L;
+  this->out2_H = val_H;
+  this->out3_L = val_L;
+  this->out3_H = val_H;
+  this->out4_L = val_L;
+  this->out4_H = val_H;
   return true;
 }
 
@@ -487,8 +502,20 @@ bool gs_cp0q_ram_64x128_3sw5sr::write(){
   return false;
 }
 
-bool gs_cp0q_ram_64x128_3sw5sr::read(){
-  return false;
+bool gs_cp0q_ram_64x128_3sw5sr::read(uint8_t addr){
+  return
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      true, addr, false, addr, false, addr, false, addr, false, addr) && 
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      false, addr, true, addr, false, addr, false, addr, false, addr) && 
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      true, addr, false, addr, false, addr, false, addr, false, addr) && 
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      false, addr, false, addr, true, addr, false, addr, false, addr) && 
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      false, addr, false, addr, false, addr, true, addr, false, addr) && 
+    this->operate( false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0x00ull,
+      false, addr, false, addr, false, addr, false, addr, true, addr);
 }
 
 uint64_t gs_cp0q_ram_64x128_3sw5sr::get_out0H(){
@@ -630,8 +657,18 @@ bool gs_cp0q_ram_48x64_2sw5sr::write(){
   return false;
 }
 
-bool gs_cp0q_ram_48x64_2sw5sr::read(){
-  return false;
+bool gs_cp0q_ram_48x64_2sw5sr::read(uint8_t addr){
+  return
+    this->operate( false, 0, 0, false, 0, 0,
+      true, addr, false, addr, false, addr, false, addr, false, addr) &&
+    this->operate( false, 0, 0, false, 0, 0,
+      false, addr, true, addr, false, addr, false, addr, false, addr) &&
+    this->operate( false, 0, 0, false, 0, 0,
+      false, addr, false, addr, true, addr, false, addr, false, addr) &&
+    this->operate( false, 0, 0, false, 0, 0,
+      false, addr, false, addr, false, addr, true, addr, false, addr) &&
+    this->operate( false, 0, 0, false, 0, 0,
+      false, addr, false, addr, false, addr, false, addr, true, addr);
 }
 
 uint64_t gs_cp0q_ram_48x64_2sw5sr::get_out0(){
@@ -689,6 +726,7 @@ bool gs_cam_464v_64x64_1wrs::check( bool se, uint64_t svpn, uint16_t sasid, uint
 
   if( addr > 0x3F ) return false;
   if( se && re ) return false;
+  if( we && re ) return false;
   if( se && we && ( (0x01ull<<addr) & valid ) ) return false;
 
   if( svpn  > (0x01ull << 48) ) return false;
@@ -701,22 +739,11 @@ bool gs_cam_464v_64x64_1wrs::check( bool se, uint64_t svpn, uint16_t sasid, uint
 }
 
 bool gs_cam_464v_64x64_1wrs::operate( bool se, uint64_t svpn, uint16_t sasid, uint64_t valid,
-    bool we, uint64_t wdata, uint64_t wvpn,
-    uint32_t wmask, uint16_t wasid, bool g,
+    bool we, uint64_t wdata, uint64_t wvpn, uint32_t wmask, uint16_t wasid, bool g,
     bool re, uint16_t addr){
 
   if( not this->check( se, svpn, sasid, valid, we, wvpn, wmask, wasid, re, addr ) ) return false;
 
-  if( re ){
-    this->out = this->ram[addr];
-  }
-  if( we ){
-    this->ram[addr]      = wdata;
-    this->cam_vpn[addr]  = wvpn;
-    this->cam_mask[addr] = wmask;
-    this->cam_asid[addr] = wasid;
-    this->cam_g[addr]    = g;
-  }
   if( se ){
     bool flag=false;
     int match_addr=-1;
@@ -741,6 +768,16 @@ bool gs_cam_464v_64x64_1wrs::operate( bool se, uint64_t svpn, uint16_t sasid, ui
       this->match = 0x00ull;
       this->out = 0xffffffffffffffffull;
     }
+  }
+  if( re ){
+    this->out = this->ram[addr];
+  }
+  if( we ){
+    this->ram[addr]      = wdata;
+    this->cam_vpn[addr]  = wvpn;
+    this->cam_mask[addr] = wmask;
+    this->cam_asid[addr] = wasid;
+    this->cam_g[addr]    = g;
   }
 
   return true;
@@ -796,8 +833,8 @@ void gs_cam_464v_64x64_1wrs::dump(){
 
 //-------------------------------------------------------------------
 
-// Begin of gs_cam_btb_30x96_1wrs
-gs_cam_btb_30x96_1wrs::gs_cam_btb_30x96_1wrs( uint32_t vpn, uint64_t data){
+// Begin of gs_cam_btb_30x96_1w1s
+gs_cam_btb_30x96_1w1s::gs_cam_btb_30x96_1w1s( uint32_t vpn, uint64_t data){
   this->memset(vpn, data);
   this->out = data;
   this->match31_00 = 0x0ul;
@@ -805,7 +842,7 @@ gs_cam_btb_30x96_1wrs::gs_cam_btb_30x96_1wrs( uint32_t vpn, uint64_t data){
   this->match95_64 = 0x0ul;
 }
 
-bool gs_cam_btb_30x96_1wrs::check( bool se, uint32_t svpn,
+bool gs_cam_btb_30x96_1w1s::check( bool se, uint32_t svpn,
     uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,
     bool we, uint32_t addr31_00, uint32_t addr63_32,
     uint32_t addr95_64, uint32_t wvpn, uint64_t data ){
@@ -836,7 +873,7 @@ bool gs_cam_btb_30x96_1wrs::check( bool se, uint32_t svpn,
   return true;
 }
 
-bool gs_cam_btb_30x96_1wrs::operate( bool se, uint32_t svpn, uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,
+bool gs_cam_btb_30x96_1w1s::operate( bool se, uint32_t svpn, uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,
     bool we, uint32_t addr31_00, uint32_t addr63_32, uint32_t addr95_64, uint64_t data, uint32_t wvpn ){
 
   if( not this->check( se, svpn, valid31_00, valid63_32, valid95_64, we,
@@ -897,14 +934,14 @@ bool gs_cam_btb_30x96_1wrs::operate( bool se, uint32_t svpn, uint32_t valid31_00
       this->match31_00 = 0x00ul;
       this->match63_32 = 0x00ul;
       this->match95_64 = 0x00ul;
-      this->out = 0x3ffffffffffull; // when no match, output will be all 1
+      this->out = 0x3fffffffffffull; // when no match, output will be all 1
     }
   }
 
   return true;
 }
 
-bool gs_cam_btb_30x96_1wrs::memset( uint32_t vpn, uint64_t data ){
+bool gs_cam_btb_30x96_1w1s::memset( uint32_t vpn, uint64_t data ){
   for(int i=0; i<96; i++){
     this->cam[i] = vpn;
     this->ram[i] = data;
@@ -912,35 +949,35 @@ bool gs_cam_btb_30x96_1wrs::memset( uint32_t vpn, uint64_t data ){
   return true;
 }
 
-bool gs_cam_btb_30x96_1wrs::write(){
+bool gs_cam_btb_30x96_1w1s::write(){
   return false;
 }
 
-bool gs_cam_btb_30x96_1wrs::read(){
+bool gs_cam_btb_30x96_1w1s::read(const uint8_t addr){
   return false;
 }
 
-uint64_t gs_cam_btb_30x96_1wrs::get_out(){
+uint64_t gs_cam_btb_30x96_1w1s::get_out(){
   return this->out;
 }
 
-bool gs_cam_btb_30x96_1wrs::get_hit(){
+bool gs_cam_btb_30x96_1w1s::get_hit(){
   return this->hit;
 }
 
-uint32_t gs_cam_btb_30x96_1wrs::get_match31_00(){
+uint32_t gs_cam_btb_30x96_1w1s::get_match31_00(){
   return this->match31_00;
 }
 
-uint32_t gs_cam_btb_30x96_1wrs::get_match63_32(){
+uint32_t gs_cam_btb_30x96_1w1s::get_match63_32(){
   return this->match63_32;
 }
 
-uint32_t gs_cam_btb_30x96_1wrs::get_match95_64(){
+uint32_t gs_cam_btb_30x96_1w1s::get_match95_64(){
   return this->match95_64;
 }
 
-void gs_cam_btb_30x96_1wrs::dump(){
+void gs_cam_btb_30x96_1w1s::dump(){
   uint16_t d0, d1, d2, d3;
   uint64_t d64;
   printf("\n\n--------------Begin of CAM_BTB dump---------------\n");
@@ -962,7 +999,7 @@ void gs_cam_btb_30x96_1wrs::dump(){
   printf("---------------End of CAM_BTB dump----------------\n\n");
 }
 
-// End of gs_cam_btb_30x96_1wrs
+// End of gs_cam_btb_30x96_1w1s
 
 //-------------------------------------------------------------------
 

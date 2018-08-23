@@ -4,12 +4,16 @@
 
 CC=g++
 CFLAGS=-O1 -g -Wno-write_strings
-CFLAGS+=-DDUMP_MEM
-OBJS=str2num.o gs_memory_class.o gs_memory_test.o
+CFLAGS+=-DDUMP_MEM -DPRINT_DETAIL
+OBJS=str2num.o spi.o mmaplib.o testbed.o
+OBJS+=gs_memory_class.o gs_memory_test.o
+OBJS+=rf86_function.o rf44_function.o cp35_function.o cp25_function.o
+OBJS+=cam464v_function.o btbcam_function.o
+OBJS+=random_test.o
 LDFLAGS=-g
 
 all:	${OBJS}
-	${CC} ${LDFLAGS} ${OBJS} -o gs_memory_test
+	${CC} ${LDFLAGS} ${OBJS} -o randomTest
 
 .c.o:
 	${CC} ${CFLAGS} -c $< -o $@
@@ -18,4 +22,4 @@ all:	${OBJS}
 	${CC} ${CFLAGS} -c $< -o $@
 
 clean:
-	rm -f *.o gs_memory_test
+	rm -f *.o randomTest

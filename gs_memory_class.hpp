@@ -43,7 +43,7 @@ class gs_regfile_128x64_8sw6sr : public gs_memory{
         const bool re4, const uint8_t rad4, const bool re5, const uint8_t rad5);
     bool memset(const uint64_t val = 0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out0();
     uint64_t get_out1();
     uint64_t get_out2();
@@ -77,7 +77,7 @@ class gs_regfile_128x64_4sw4sr : public gs_memory{
         const bool re2, const uint8_t rad2, const bool re3, const uint8_t rad3);
     bool memset(const uint64_t val = 0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out0();
     uint64_t get_out1();
     uint64_t get_out2();
@@ -89,7 +89,7 @@ class gs_cp0q_ram_64x128_3sw5sr : public gs_memory{
   private:
     uint64_t mem_H[64];
     uint64_t mem_L[64];
-    uint16_t mask[64];
+    uint32_t mask[64];
   protected:
     uint64_t out0_H, out0_L;
     uint64_t out1_H, out1_L;
@@ -105,15 +105,15 @@ class gs_cp0q_ram_64x128_3sw5sr : public gs_memory{
   public:
     gs_cp0q_ram_64x128_3sw5sr(const uint16_t mask=0xffffull, const uint64_t val_L=0x00ull,const uint64_t val_H=0x00ull);
     bool operate(
-        const bool we0, const uint8_t wad0, const uint64_t wvalue0_L, const uint64_t wvalue0_H, const uint16_t wmask0,
-        const bool we1, const uint8_t wad1, const uint64_t wvalue1_L, const uint64_t wvalue1_H, const uint16_t wmask1,
+        const bool we0, const uint8_t wad0, const uint64_t wvalue0_L, const uint64_t wvalue0_H, const uint32_t wmask0,
+        const bool we1, const uint8_t wad1, const uint64_t wvalue1_L, const uint64_t wvalue1_H, const uint32_t wmask1,
         const uint64_t wen2,
         const bool re0, const uint8_t rad0, const bool re1, const uint8_t rad1,
         const bool re2, const uint8_t rad2, const bool re3, const uint8_t rad3,
         const bool re4, const uint8_t rad4);
     bool memset(const uint16_t mask=0xffffull, const uint64_t val_L=0x00ull, const uint64_t val_H=0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out0H();
     uint64_t get_out0L();
     uint64_t get_out1H();
@@ -149,7 +149,7 @@ class gs_cp0q_ram_48x64_2sw5sr : public gs_memory{
         const bool re4, const uint8_t rad4);
     bool memset(const uint64_t val=0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out0();
     uint64_t get_out1();
     uint64_t get_out2();
@@ -182,14 +182,14 @@ class gs_cam_464v_64x64_1wrs : public gs_memory{
     bool memset(const uint64_t vpn=0x00ull, const uint32_t mask=0x00ul,
         const uint16_t asid=0x00, const bool g=false, const uint64_t data=0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out();
     uint64_t get_match();
     bool     get_hit();
     void dump();
 }; // end of gs_cam_464v_64x64_1wrs
 
-class gs_cam_btb_30x96_1wrs : public gs_memory{
+class gs_cam_btb_30x96_1w1s : public gs_memory{
   private:
     uint32_t cam[96];  // 29:0
     uint64_t ram[96];  // 45:0
@@ -204,21 +204,21 @@ class gs_cam_btb_30x96_1wrs : public gs_memory{
         const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
         const uint32_t addr95_64, const uint32_t wvpn, const uint64_t data );
   public:
-    gs_cam_btb_30x96_1wrs(const uint32_t vpn=0x00ul, const uint64_t data=0x00ull);
+    gs_cam_btb_30x96_1w1s(const uint32_t vpn=0x00ul, const uint64_t data=0x00ull);
     bool operate( const bool se, const uint32_t svpn,
         const uint32_t valid31_00, const uint32_t valid63_32, const uint32_t valid95_64,
         const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
         const uint32_t addr95_64, const uint64_t data, const uint32_t wvpn );
     bool memset(const uint32_t vpn=0x00ull, const uint64_t data=0x00ull);
     bool write();
-    bool read();
+    bool read(const uint8_t addr=0x00);
     uint64_t get_out();
     bool get_hit();
     uint32_t get_match31_00();
     uint32_t get_match63_32();
     uint32_t get_match95_64();
     void dump();
-}; // end of gs_cam_btb_30x96_1wrs
+}; // end of gs_cam_btb_30x96_1w1s
 
 #endif
 
