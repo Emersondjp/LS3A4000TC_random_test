@@ -30,6 +30,7 @@ template <class T1, class T2> bool write_patgld( const int index, const T1& pat,
   memcpy( &cpy_gld, &gld, sizeof(T2) );
   do{
     write_pattern( index, pat );
+    memset( &tmp_pat, 0 , sizeof(T1) );
     read_pattern( index, tmp_pat );
     if( memcmp( &cpy_pat, &tmp_pat, sizeof(T1) ) != 0 ){
       pat_cnt++;
@@ -39,6 +40,7 @@ template <class T1, class T2> bool write_patgld( const int index, const T1& pat,
 
   do{
     write_golden( index, gld );
+    memset( &tmp_gld, 0 , sizeof(T2) );
     read_golden( index, tmp_gld );
     if( memcmp( &cpy_gld, &tmp_gld, sizeof(T2) ) != 0 ){
       gld_cnt++;

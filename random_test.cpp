@@ -21,7 +21,7 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define TEST_TIMES 2
+#define TEST_TIMES 1000
 
 extern unsigned int str2num(unsigned char *s);
 extern int pat_cnt;
