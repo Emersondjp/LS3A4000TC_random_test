@@ -45,20 +45,21 @@ bool gs_regfile_128x64_8sw6sr::check(
     bool re2, uint8_t rad2, bool re3, uint8_t rad3,
     bool re4, uint8_t rad4, bool re5, uint8_t rad5){
 
-  if( we0 && wad0 > 0x7F ) return false;
-  if( we1 && wad1 > 0x7F ) return false;
-  if( we2 && wad2 > 0x7F ) return false;
-  if( we3 && wad3 > 0x7F ) return false;
-  if( we4 && wad4 > 0x7F ) return false;
-  if( we5 && wad5 > 0x7F ) return false;
-  if( we6 && wad6 > 0x7F ) return false;
-  if( we7 && wad7 > 0x7F ) return false;
-  if( re0 && rad0 > 0x7F ) return false;
-  if( re1 && rad1 > 0x7F ) return false;
-  if( re2 && rad2 > 0x7F ) return false;
-  if( re3 && rad3 > 0x7F ) return false;
-  if( re4 && rad4 > 0x7F ) return false;
-  if( re5 && rad5 > 0x7F ) return false;
+  if( wad0 > 0x7F ) return false;
+  if( wad1 > 0x7F ) return false;
+  if( wad2 > 0x7F ) return false;
+  if( wad3 > 0x7F ) return false;
+  if( wad4 > 0x7F ) return false;
+  if( wad5 > 0x7F ) return false;
+  if( wad6 > 0x7F ) return false;
+  if( wad7 > 0x7F ) return false;
+
+  if( rad0 > 0x7F ) return false;
+  if( rad1 > 0x7F ) return false;
+  if( rad2 > 0x7F ) return false;
+  if( rad3 > 0x7F ) return false;
+  if( rad4 > 0x7F ) return false;
+  if( rad5 > 0x7F ) return false;
 
   if( we0 ){
     if( we1 && (wad0==wad1) ) return false;

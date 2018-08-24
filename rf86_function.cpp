@@ -181,12 +181,8 @@ int rf86_operate( int index, const bool we0, const uint16_t wad0, const uint8_t 
   gld.q[4] = 0x0101010101010101ull*(q4&0xffull);
   gld.q[5] = 0x0101010101010101ull*(q5&0xffull);
 
-#ifndef DEBUG
   write_golden( index, gld );
   write_pattern( index, pat );
-#else
-  rf86_print_vec( index, pat, gld );
-#endif
 
   return index+1;
 }

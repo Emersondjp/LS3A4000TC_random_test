@@ -20,14 +20,20 @@ void spi_init()
   SPI_FIFO = SPI_BASE + 2;
   SPI_SPER = SPI_BASE + 3;
   *SPI_SPCR = 0x0;
-  *SPI_SPCR = 0x5f; // {int_en, spi, rsvd, mstr, cpol, cpha, spr[1:0]}
+  *SPI_SPCR = 0x5d; // {int_en, spi, rsvd, mstr, cpol, cpha, spr[1:0]}
   *SPI_SPER = 0x1;
 /*
  * 8Mhz : *SPI_SPCR = 0x5c; *SPI_SPER=0x01;
  * 4Mhz : *SPI_SPCR = 0x5c; *SPI_SPER=0x01;
  * 2Mhz : *SPI_SPCR = 0x5e; *SPI_SPER=0x0;
  * 1Mhz : *SPI_SPCR = 0x5f; *SPI_SPER=0x0;
- * 500KHz : *SPI_SPCR = 0x5f; *SPI_SPER=0x1;
+ * 500KHz : *SPI_SPCR = 0x5d; *SPI_SPER=0x1;
+ * 250KHz : *SPI_SPCR = 0x5d; *SPI_SPER=0x2;
+ * 125KHz : *SPI_SPCR = 0x5d; *SPI_SPER=0x3;
+ * 64KHz  : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x0;
+ * 32KHz  : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x1;
+ * 16KHz  : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x2;
+ * 8KHz   : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x3;
  */
 #ifdef DEBUG
   printf("Waiting for !SPI_RXEMPTY ...\n");

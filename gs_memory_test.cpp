@@ -18,11 +18,43 @@
 
 #define ONCE_TEST_MAX 1000 // Need < 1024
 
+int pat_cnt=0;
+int gld_cnt=0;
+
+template <class T1, class T2> bool write_patgld( const int index, const T1& pat, const T2& gld ){
+  T1 cpy_pat, tmp_pat;
+  T2 cpy_gld, tmp_gld;
+  memset( &tmp_pat, 0 , sizeof(T1) );
+  memset( &tmp_gld, 0 , sizeof(T2) );
+  memcpy( &cpy_pat, &pat, sizeof(T1) );
+  memcpy( &cpy_gld, &gld, sizeof(T2) );
+  do{
+    write_pattern( index, pat );
+    read_pattern( index, tmp_pat );
+    if( memcmp( &cpy_pat, &tmp_pat, sizeof(T1) ) != 0 ){
+      pat_cnt++;
+      continue;
+    }else break;
+  }while(1);
+
+  do{
+    write_golden( index, gld );
+    read_golden( index, tmp_gld );
+    if( memcmp( &cpy_gld, &tmp_gld, sizeof(T2) ) != 0 ){
+      gld_cnt++;
+      continue;
+    }else break;
+  }while(1);
+
+}
+
 bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
-  tb_rf8w6r_in_t  pat;
-  tb_rf8w6r_out_t gld;
+  tb_rf8w6r_in_t  pat, tmp_pat;
+  tb_rf8w6r_out_t gld, tmp_gld;
   memset(&pat, 0, sizeof(pat));
   memset(&gld, 0, sizeof(gld));
+  memset(&tmp_pat, 0, sizeof(tmp_pat));
+  memset(&tmp_gld, 0, sizeof(tmp_gld));
 
   int i=0;
   // Read all port at first cycle
@@ -44,8 +76,9 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
     gld.q[3] = rf86.get_out3();
     gld.q[4] = rf86.get_out4();
     gld.q[5] = rf86.get_out5();
-    write_pattern(i, pat);
-    write_golden( i, gld);
+    //write_pattern(i, pat);
+    //write_golden( i, gld);
+    write_patgld(i, pat, gld);
     i++;
   } else exit(-1);
 
@@ -94,8 +127,14 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
       gld.q[3] = rf86.get_out3();
       gld.q[4] = rf86.get_out4();
       gld.q[5] = rf86.get_out5();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+
+      //printf("Output vec program produced...\n");
+      //rf86_print_vec2( i, pat, gld );
+      //printf("End output...\n");
+
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };
@@ -117,7 +156,7 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
     for( int k=0; k<ONCE_TEST_MAX; k++ ){
       read_pattern(k, tmp_pat);
       read_golden( k, tmp_gld);
-      rf86_print_vec( k, tmp_pat, tmp_gld );
+      rf86_print_vec2( k, tmp_pat, tmp_gld );
     }
     printf("\n\n");
     for (int i=0; i<ONCE_TEST_MAX; i++) {
@@ -186,8 +225,9 @@ int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
     gld.q[1] = rf44.get_out1();
     gld.q[2] = rf44.get_out2();
     gld.q[3] = rf44.get_out3();
-    write_pattern(i, pat);
-    write_golden( i, gld);
+    //write_pattern(i, pat);
+    //write_golden( i, gld);
+    write_patgld(i, pat, gld);
     i++;
   } else exit(-1);
 
@@ -219,8 +259,9 @@ int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
       gld.q[1] = rf44.get_out1();
       gld.q[2] = rf44.get_out2();
       gld.q[3] = rf44.get_out3();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };
@@ -315,8 +356,9 @@ bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
     gld.q2 = cp35.get_out2L();
     gld.q3 = cp35.get_out3L();
     gld.q4 = cp35.get_out4L();
-    write_pattern(i, pat);
-    write_golden( i, gld);
+    //write_pattern(i, pat);
+    //write_golden( i, gld);
+    write_patgld(i, pat, gld);
     i++;
   } else exit(-1);
 
@@ -352,8 +394,9 @@ bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
       gld.q2 = pat.osel ? cp35.get_out2H() :  cp35.get_out2L();
       gld.q3 = pat.osel ? cp35.get_out3H() :  cp35.get_out3L();
       gld.q4 = pat.osel ? cp35.get_out4H() :  cp35.get_out4L();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };
@@ -446,8 +489,9 @@ bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
     gld.q2 = cp25.get_out2();
     gld.q3 = cp25.get_out3();
     gld.q4 = cp25.get_out4();
-    write_pattern(i, pat);
-    write_golden( i, gld);
+    //write_pattern(i, pat);
+    //write_golden( i, gld);
+    write_patgld(i, pat, gld);
     i++;
   } else exit(-1);
 
@@ -484,8 +528,9 @@ bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
       gld.q2 = cp25.get_out2();
       gld.q3 = cp25.get_out3();
       gld.q4 = cp25.get_out4();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };
@@ -588,8 +633,9 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
       gld.match = cam464v.get_match();
       gld.rd    = cam464v.get_out();
       gld.hit   = cam464v.get_hit();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };
@@ -695,8 +741,9 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
       gld.rd[0]    = rd&0xffffffff; 
       gld.rd[1]    = rd&0x3fff; 
       gld.hit   = cambtb.get_hit();
-      write_pattern(i, pat);
-      write_golden( i, gld);
+      //write_pattern(i, pat);
+      //write_golden( i, gld);
+      write_patgld(i, pat, gld);
       i++;
     }
   };

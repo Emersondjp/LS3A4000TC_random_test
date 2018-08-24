@@ -21,9 +21,11 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define TEST_TIMES 10000
+#define TEST_TIMES 2
 
 extern unsigned int str2num(unsigned char *s);
+extern int pat_cnt;
+extern int gld_cnt;
 
 bool gs_memory_initial(
     gs_regfile_128x64_8sw6sr& rf86,
@@ -156,67 +158,100 @@ int main(int argc, char* argv[])
   }
   fflush(stdout);
 
+  int rf86_cnt=0, rf44_cnt=0, cp35_cnt=0, cp25_cnt=0, cam464v_cnt=0, cambtb_cnt=0;
+
   for( int i=0; i<TEST_TIMES; i++){
+#ifdef TEST_RF86
     if( ! randomTest_8w6r( rf86 ) ){
       printf("\n********************** 8W6R ERROR OUT *********************\n");
-      return -2;
+      rf86_cnt++;
+      //return -2;
     } else {
       printf("\n********************** 8W6R PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
+#ifdef TEST_RF44
     if( ! randomTest_4w4r( rf44 ) ){
       printf("\n********************** 4W4R ERROR OUT *********************\n");
-      return -3;
+      rf44_cnt++;
+      //return -3;
     } else {
       printf("\n********************** 4W4R PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
+#ifdef TEST_CP35
     if( ! randomTest_3w5r( cp35 ) ){
       printf("\n********************** 3W5R ERROR OUT *********************\n");
-      return -4;
+      cp35_cnt++;
+      //return -4;
     } else {
       printf("\n********************** 3W5R PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
+#ifdef TEST_CP25
     if( ! randomTest_2w5r( cp25 ) ){
       printf("\n********************** 2W5R ERROR OUT *********************\n");
-      return -5;
+      cp25_cnt++;
+      //return -5;
     } else {
       printf("\n********************** 2W5R PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
+#ifdef TEST_CAM464V
     if( ! randomTest_cam464v( cam464v ) ){
       printf("\n******************** 464V_CAM ERROR OUT *******************\n");
-      return -6;
+      cam464v_cnt++;
+      //return -6;
     } else {
       printf("\n********************** 464V_CAM PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
+#ifdef TEST_CAMBTB
     if( ! randomTest_cambtb( cambtb ) ){
       printf("\n******************** BTB_CAM ERROR OUT *******************\n");
-      return -7;
+      cambtb_cnt++;
+      //return -7;
     } else {
       printf("\n********************** BTB_CAM PASS %d *********************\n", i);
     }
     fflush(stdout);
+#endif
 
   }
 
-
 #ifdef DUMP_MEM
-    // Begin dump
-    rf86.dump();
-    rf44.dump();
-    cp35.dump();
-    cp25.dump();
-    cam464v.dump();
-    cambtb.dump();
-    // End dump
+  // Begin dump
+  rf86.dump();
+  rf44.dump();
+  cp35.dump();
+  cp25.dump();
+  cam464v.dump();
+  cambtb.dump();
+  // End dump
 #endif
+
+  printf("\n\n");
+  printf("\n************** Begin of Conclude *************");
+  printf("\n**     REGFILE_8W6R : %3d                   **", rf86_cnt);
+  printf("\n**     REGFILE_4W4R : %3d                   **", rf44_cnt);
+  printf("\n**    CP0Q_RAM_3W5R : %3d                   **", cp35_cnt);
+  printf("\n**    CP0Q_RAM_2W5R : %3d                   **", cp25_cnt);
+  printf("\n**         CAM_464V : %3d                   **", cam464v_cnt);
+  printf("\n**         CAM_BTB  : %3d                   **", cambtb_cnt);
+  printf("\n**********************************************");
+  printf("\n**         pat_buf  : %3d                   **", pat_cnt);
+  printf("\n**         gld_buf  : %3d                   **", gld_cnt);
+  printf("\n************** End   of Conclude *************\n");
+
   return 0;
 }
