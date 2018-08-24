@@ -26,23 +26,27 @@ template <class T1, class T2> bool write_patgld( const int index, const T1& pat,
   T2 cpy_gld, tmp_gld;
   memset( &tmp_pat, 0 , sizeof(T1) );
   memset( &tmp_gld, 0 , sizeof(T2) );
-  memcpy( &cpy_pat, &pat, sizeof(T1) );
-  memcpy( &cpy_gld, &gld, sizeof(T2) );
   do{
-    write_pattern( index, pat );
+    memcpy( &cpy_pat, &pat, sizeof(T1) );
+    write_pattern( index, cpy_pat );
+
     memset( &tmp_pat, 0 , sizeof(T1) );
     read_pattern( index, tmp_pat );
-    if( memcmp( &cpy_pat, &tmp_pat, sizeof(T1) ) != 0 ){
+    if( memcmp( &pat, &tmp_pat, sizeof(T1) ) != 0 ){
+      printf("*ERROR* : pattern-ram write error detected!\n");
       pat_cnt++;
       continue;
     }else break;
   }while(1);
 
   do{
-    write_golden( index, gld );
+    memcpy( &cpy_gld, &gld, sizeof(T2) );
+    write_golden( index, cpy_gld );
+
     memset( &tmp_gld, 0 , sizeof(T2) );
     read_golden( index, tmp_gld );
-    if( memcmp( &cpy_gld, &tmp_gld, sizeof(T2) ) != 0 ){
+    if( memcmp( &gld, &tmp_gld, sizeof(T2) ) != 0 ){
+      printf("*ERROR* : golden-ram write error detected!\n");
       gld_cnt++;
       continue;
     }else break;
