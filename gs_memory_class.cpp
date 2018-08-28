@@ -886,11 +886,6 @@ bool gs_cam_btb_30x96_1w1s::operate( bool se, uint32_t svpn, uint32_t valid31_00
     if( addr63_32 & (0x01ul<<i) ){ myaddr = i + 32; break; }
     if( addr95_64 & (0x01ul<<i) ){ myaddr = i + 64; break; }
   }
-  if(we){
-    this->cam[myaddr] = wvpn;
-    this->ram[myaddr] = data;
-  }
-
   bool flag=false;
   int  match_addr=-1;
   if(se){
@@ -922,7 +917,7 @@ bool gs_cam_btb_30x96_1w1s::operate( bool se, uint32_t svpn, uint32_t valid31_00
     }
 
     if( flag ){
-      this->hit = true;
+      this->hit = 0x1;
       this->out = this->ram[match_addr];
       this->match31_00 = 0x00ull;
       this->match63_32 = 0x00ul;
@@ -931,12 +926,17 @@ bool gs_cam_btb_30x96_1w1s::operate( bool se, uint32_t svpn, uint32_t valid31_00
       else if(match_addr < 64) match63_32 = (0x01ull<<(match_addr-32));
       else if(match_addr < 96) match95_64 = (0x01ull<<(match_addr-64));
     } else {
-      this->hit = false;
+      this->hit = 0x0;
       this->match31_00 = 0x00ul;
       this->match63_32 = 0x00ul;
       this->match95_64 = 0x00ul;
       this->out = 0x3fffffffffffull; // when no match, output will be all 1
     }
+  }
+
+  if(we){
+    this->cam[myaddr] = wvpn;
+    this->ram[myaddr] = data;
   }
 
   return true;

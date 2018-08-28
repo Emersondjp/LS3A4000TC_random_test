@@ -148,7 +148,7 @@ void btbcam_print_vec( int index, const tb_btbcam_in_t &pat, const tb_btbcam_out
   }
   if( pat.sen ){
     printf("     Search   : svpn=%#010lX, valid=0x%016lX_%016lX_%016lX;\n", pat.svpn, pat.valid[2], pat.valid[1], pat.valid[0] );
-    printf("     Expected : hit=%x, rd  =0x%016lX_%016lX, match=0x%016lX_%016lX_%016lX;\n", gld.hit, gld.rd[1], gld.rd[0], gld.match[2], gld.match[1], gld.match[0] );
+    printf("     Expected : hit=%x, rd  =0x%08lX_%08lX, match=0x%016lX_%016lX_%016lX;\n", gld.hit, gld.rd[1], gld.rd[0], gld.match[2], gld.match[1], gld.match[0] );
   }
   fflush(stdout);
 }
@@ -159,8 +159,8 @@ void btbcam_print_vec2( int index, const tb_btbcam_in_t &pat, const tb_btbcam_ou
    */
   printf("Index %04d : \n", index);
     printf("     Write    : wen=%d, addr=%#04X, wd=%#018lX, wvpn=%#014lX;\n", pat.wen, pat.addr, pat.wd, pat.wvpn );
-    printf("     Search   : sen=%d, svpn=%#014lX, valid=%#018lX;\n", pat.sen, pat.svpn, pat.valid );
-    printf("     Expected : hit=%x, rd  =%#018lX, match=%#018lX;\n", gld.hit, gld.rd, gld.match );
+    printf("     Search   : sen=%d, svpn=%#014lX, valid=0x%016lX_%016lX_%016lX;\n", pat.sen, pat.svpn, pat.valid[2], pat.valid[1], pat.valid[0] );
+    printf("     Expected : hit=%x, rd  =0x%08lX_%08lX, match=0x%016lX_%016lX_%016lX;\n", gld.hit, gld.rd[1], gld.rd[0], gld.match[2], gld.match[1], gld.match[0] );
   fflush(stdout);
 }
 
