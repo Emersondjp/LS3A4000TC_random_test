@@ -796,6 +796,16 @@ bool gs_cam_464v_64x64_1wrs::memset( uint64_t vpn, uint32_t mask, uint16_t asid,
   return true;
 }
 
+uint16_t gs_cam_464v_64x64_1wrs::get_asid(const uint8_t addr){
+  assert( addr < 64 );
+  return this->cam_asid[addr];
+}
+
+uint64_t gs_cam_464v_64x64_1wrs::get_vpn(const uint8_t addr){
+  assert( addr < 64 );
+  return this->cam_vpn[addr];
+}
+
 uint64_t gs_cam_464v_64x64_1wrs::get_out(){
   return this->out;
 }

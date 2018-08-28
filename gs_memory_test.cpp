@@ -16,7 +16,7 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define ONCE_TEST_MAX 1000 // Need < 1024
+#define ONCE_TEST_MAX 100 // Need < 1024
 
 int pat_cnt=0;
 int gld_cnt=0;
@@ -622,18 +622,42 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
     memset(&pat, 0, sizeof(pat));
     memset(&gld, 0, sizeof(gld));
     pat.cmp_mask = 0x1ffffull;
-    pat.valid = (((uint64_t)random())<<32) + (uint64_t)random();
+    pat.valid = (((uint64_t)(random()|random()))<<32) + (uint64_t)(random()|random());
     pat.wd    = (((uint64_t)random())<<32) + (uint64_t)random();
     pat.wvpn  = (((uint64_t)random()&0xffff)<<32) + (uint64_t)random();
-    pat.svpn  = (((uint64_t)random()&0xffff)<<32) + (uint64_t)random();
     pat.wasid = random()&0x3ff;
-    pat.sasid = random()&0x3ff;
     pat.wen   = random()&0x1;
     pat.ren   = random()&0x1;
     pat.sen   = random()&0x1;
     pat.addr  = random()&0x3f;
     pat.mask  = random()&0x3ffff;
-    pat.G     = random()&0x1;
+    pat.G     = (random()&0xf) < 0x4 ? 0x1 : 0x0;
+
+    // determin sasid & svpn
+    uint8_t tmp_addr = random()&0x3f;
+    if( (random()&0xf) < 0xa ){
+      pat.sasid = cam464v.get_asid( tmp_addr );
+    } else {
+      pat.sasid = random()&0x3ff;
+    }
+
+    uint32_t tmp_mask   = random()&0x3ffff;
+    uint64_t inner_svpn = cam464v.get_vpn(tmp_addr);
+    if( (random()&0xff) < 0xf8 ){
+      unsigned int tmp = random()&0xf ;
+      if( tmp < 6 ){
+        pat.svpn = inner_svpn ;
+      } else if( tmp < 14 ) {
+        pat.svpn  = inner_svpn ^ (pat.mask & tmp_mask);
+      } else if( tmp < 15 ) {
+        pat.svpn  = inner_svpn ^ (pat.mask | tmp_mask);
+      } else {
+        uint64_t t = (((uint64_t)random()&0xffff)<<32) + (uint64_t)random();
+        pat.svpn = inner_svpn ^ (t);
+      }
+    } else {
+      pat.svpn  = (((uint64_t)random()&0xffff)<<32) + (uint64_t)random();
+    }
 
     if( cam464v.operate( pat.sen, pat.svpn, pat.sasid, pat.valid,
           pat.wen, pat.wd, pat.wvpn, pat.mask, pat.wasid, pat.G,
@@ -643,6 +667,7 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
       gld.hit   = cam464v.get_hit();
       //write_pattern(i, pat);
       //write_golden( i, gld);
+      //cam464v_print_vec( i, pat, gld );
       write_patgld(i, pat, gld);
       i++;
     }
@@ -751,11 +776,11 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
       gld.match[2] = cambtb.get_match95_64();
       uint64_t rd  = cambtb.get_out();
       gld.rd[0]    = rd&0xffffffff; 
-      gld.rd[1]    = rd&0x3fff; 
+      gld.rd[1]    = (rd>>32)&0x3fff; 
       gld.hit   = cambtb.get_hit();
       //write_pattern(i, pat);
       //write_golden( i, gld);
-      btbcam_print_vec( i, pat, gld );
+      //btbcam_print_vec( i, pat, gld );
       write_patgld(i, pat, gld);
       i++;
     }

@@ -183,6 +183,8 @@ class gs_cam_464v_64x64_1wrs : public gs_memory{
         const uint16_t asid=0x00, const bool g=false, const uint64_t data=0x00ull);
     bool write();
     bool read(const uint8_t addr=0x00);
+    uint16_t get_asid(const uint8_t addr=0x00);
+    uint64_t get_vpn(const uint8_t addr=0x00);
     uint64_t get_out();
     uint64_t get_match();
     bool     get_hit();
