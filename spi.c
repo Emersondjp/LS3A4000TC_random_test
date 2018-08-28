@@ -15,6 +15,7 @@ volatile unsigned char*SPI_SPER= NULL;
 
 void spi_init()
 {
+#ifndef NO_HARDWARE
   SPI_SPCR = SPI_BASE + 0;
   SPI_SPSR = SPI_BASE + 1;
   SPI_FIFO = SPI_BASE + 2;
@@ -35,48 +36,52 @@ void spi_init()
  * 16KHz  : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x2;
  * 8KHz   : *SPI_SPCR = 0x5e/0x5f; *SPI_SPER=0x3;
  */
-#ifdef DEBUG
-  printf("Waiting for !SPI_RXEMPTY ...\n");
-#endif
   while(!SPI_RXEMPTY) *SPI_FIFO; // read till empty
-#ifdef DEBUG
-  printf("SPI_RXEMPTY waiting done...\n");
 #endif
 }
 
 // 4byte transfer
 void spi_write_read_4(uint8_t* buf)
 {
+#ifndef NO_HARDWARE
   int i;
   for (i=0; i<4; i++) *SPI_FIFO = buf[i];
   while(!SPI_TXEMPTY) ; // loop
   for (i=0; i<3; i++) buf[i] = *SPI_FIFO; // read first 3bytes
   while(SPI_RXEMPTY) ;
   buf[3] = *SPI_FIFO;
+#endif
 }
 // 1byte transfer
 void spi_write_read_1(uint8_t* buf)
 {
+#ifndef NO_HARDWARE
   int i;
   *SPI_FIFO = buf[0];
   while(SPI_RXEMPTY) ;
   buf[0] = *SPI_FIFO;
+#endif
 }
 
 
 void spi_cs_down()
 {
+#ifndef NO_HARDWARE
   *(SPI_BASE+5) = (0x0<<5) | (0x1<<1);
+#endif
 }
 
 void spi_cs_up()
 {
+#ifndef NO_HARDWARE
   *(SPI_BASE+5) = (0x1<<5) | (0x1<<1);
+#endif
 }
 
 
 uint32_t axi_read4(uint32_t addr)
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[5];
   spi_cs_down();
   cmd_buf[0] = 0xa4;        // Mread32 with 1 dummy byte
@@ -88,10 +93,12 @@ uint32_t axi_read4(uint32_t addr)
   spi_write_read_4(cmd_buf); // reuse cmd_buf
   spi_cs_up();
   return *((uint32_t*)cmd_buf);
+#endif
 }
 
 void axi_read4n(uint32_t addr, uint32_t buf[], int n)
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[5];
   int i;
   spi_cs_down();
@@ -106,11 +113,13 @@ void axi_read4n(uint32_t addr, uint32_t buf[], int n)
     buf[i] = *((uint32_t*)cmd_buf);
   }
   spi_cs_up();
+#endif
   return ;
 }
 
 void axi_write4(uint32_t addr, uint32_t data)
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[5];
   spi_cs_down();
   cmd_buf[0] = 0xac;        // Mwrite32
@@ -120,10 +129,12 @@ void axi_write4(uint32_t addr, uint32_t data)
   spi_write_read_4(cmd_buf);
   spi_write_read_4((uint8_t*)&data);    // little endian
   spi_cs_up();
+#endif
 }
 
 void axi_write4n(uint32_t addr, uint32_t data[], int n)
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[5];
   int i;
   spi_cs_down();
@@ -136,11 +147,13 @@ void axi_write4n(uint32_t addr, uint32_t data[], int n)
     spi_write_read_4((uint8_t*)(data+i));// little endian
   }
   spi_cs_up();
+#endif
 }
 
 
 uint32_t cfg_read()
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[4];
   int i;
   spi_cs_down();
@@ -148,37 +161,26 @@ uint32_t cfg_read()
   spi_write_read_4(cmd_buf);
   spi_cs_up();
   return (*((uint32_t*)cmd_buf)) >> 8; // cmd_buf shall be dword aligned
+#endif
 }
 
 void cfg_write(uint32_t data)
 {
-#ifdef DEBUG
-  printf("cfg_write Start...\n");
-#endif
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[4];
   spi_cs_down();
-#ifdef DEBUG
-  printf("spi_cs_down End...\n");
-#endif
   cmd_buf[0] = 0xb8;        // Cfg_write
   cmd_buf[1] = data & 0xff;
   cmd_buf[2] =(data >> 8) & 0xff;
   cmd_buf[3] =(data >>16) & 0xff;
-#ifdef DEBUG
-  printf("spi_write_read_4 Start...\n");
-#endif
   spi_write_read_4(cmd_buf);
-#ifdef DEBUG
-  printf("spi_write_read_4 End...\n");
-#endif
   spi_cs_up();
-#ifdef DEBUG
-  printf("cfg_write End...\n");
 #endif
 }
 
 uint32_t status_read()
 {
+#ifndef NO_HARDWARE
   uint8_t cmd_buf[4];
   int i;
   spi_cs_down();
@@ -186,5 +188,7 @@ uint32_t status_read()
   spi_write_read_4(cmd_buf);
   spi_cs_up();
   return (*((uint32_t*)cmd_buf)) >> 8; // cmd_buf shall be dword aligned
+#endif
+  return 0x01;
 }
 

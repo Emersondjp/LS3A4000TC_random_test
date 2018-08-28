@@ -14,17 +14,19 @@
 
 void sys_Init(void)
 {
+#ifndef NO_HARDWARE
   // First we need to init the parallel port
   if (mem_open()<0) exit(1);
   if (mmap_init()<0) exit(1);
 
   spi_init();
-  
+#endif 
   return;
 }
 
 void tb_start(int target, int ncyc, int pat_base, int gld_base, uint32_t mut_cfg)
 {
+#ifndef NO_HARDWARE
   if( ncyc <= 0 ){
     printf("*WARNING* : test cycle <= 0, retuned without testing.\n");
     return;
@@ -38,6 +40,7 @@ void tb_start(int target, int ncyc, int pat_base, int gld_base, uint32_t mut_cfg
   axi_write4(TB_REG(3), regs.patbase.d32);
   axi_write4(TB_REG(4), mut_cfg); // start
   axi_write4(TB_REG(2), 1); // start
+#endif
 }
 
 void tb_start(int target, int ncyc, uint32_t mut_cfg)
@@ -47,6 +50,7 @@ void tb_start(int target, int ncyc, uint32_t mut_cfg)
 
 bool tb_clear()
 {
+#ifndef NO_HARDWARE
   testbed_regs_t regs;
   regs.teststs.d32 = axi_read4(TB_REG(1));
   regs.testctl.d32 = axi_read4(TB_REG(2));
@@ -84,10 +88,12 @@ bool tb_clear()
   }
 
   return !err;
+#endif
 }
 
 bool mytb_clear(int startIndex)
 {
+#ifndef NO_HARDWARE
   testbed_regs_t regs;
   regs.teststs.d32 = axi_read4(TB_REG(1));
   regs.testctl.d32 = axi_read4(TB_REG(2));
@@ -123,12 +129,13 @@ bool mytb_clear(int startIndex)
     }
     printf("\n");
   }
-
   return !err;
+#endif
 }
 
 void clock_config()
 {
+#ifndef NO_HARDWARE
   clkcfg_reg_t clkcfg;
   clkcfg.d32 = axi_read4(CLKCFG);
 
@@ -175,5 +182,6 @@ void clock_config()
   clkcfg.b.eno = 1;
   axi_write4(CLKCFG, clkcfg.d32);// write config, power up
   printf("switch to pll\n");
+#endif
 }
 

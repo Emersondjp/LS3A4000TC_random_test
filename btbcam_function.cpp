@@ -121,8 +121,19 @@ int btbcam_memset( int index, uint64_t wd, uint32_t wvpn ){
    */
   int addr;
   for( addr=BTB_CAM_ADDR_MIN; addr<=BTB_CAM_ADDR_MAX; addr++){
-    btbcam_write( index, addr, wd, wvpn );
-    index++;
+    index = btbcam_write( index, addr, wd, wvpn );
+  }
+  return index;
+}
+
+int btbcam_memset2( int index, uint64_t wd, uint32_t wvpn ){
+  /*
+   * Write data into addr entry , return finished index number of 1024 memory
+   * index : entry number of 1024 memory
+   */
+  int addr;
+  for( addr=BTB_CAM_ADDR_MIN; addr<=BTB_CAM_ADDR_MAX; addr++){
+    index = btbcam_write( index, addr, (wd+addr)&0x00003fffffffffffull, (wvpn+addr)&0x3ffffffful );
   }
   return index;
 }

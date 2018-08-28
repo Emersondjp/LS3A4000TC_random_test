@@ -22,6 +22,7 @@ int btbcam_write( int index, uint8_t addr, uint64_t wd, uint32_t wvpn );
  */
 
 int btbcam_memset( int index, uint64_t wd, uint32_t wvpn );
+int btbcam_memset2( int index, uint64_t wd, uint32_t wvpn );
 
 int btbcam_search( int index, uint32_t svpn,
     uint32_t valid31_00, uint32_t valid63_32, uint32_t valid95_64,

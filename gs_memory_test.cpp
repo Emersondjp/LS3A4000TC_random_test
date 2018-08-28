@@ -22,6 +22,7 @@ int pat_cnt=0;
 int gld_cnt=0;
 
 template <class T1, class T2> bool write_patgld( const int index, const T1& pat, const T2& gld ){
+#ifndef NO_HARDWARE
   T1 cpy_pat, tmp_pat;
   T2 cpy_gld, tmp_gld;
   memset( &tmp_pat, 0 , sizeof(T1) );
@@ -52,6 +53,7 @@ template <class T1, class T2> bool write_patgld( const int index, const T1& pat,
     }else break;
   }while(1);
 
+#endif
 }
 
 bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
@@ -725,6 +727,7 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
     memset(&pat, 0, sizeof(pat));
     memset(&gld, 0, sizeof(gld));
     pat.cmp_mask = 0x1fffffull;
+    pat.sen   = random()&0x1;
     pat.valid[0] = random();
     pat.valid[1] = random();
     pat.valid[2] = random();
@@ -733,10 +736,13 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
     pat.addr[1] = (tmp<64)&&(tmp>=32) ? 0x1<<(tmp-32) : 0x00;
     pat.addr[2] = (tmp<96)&&(tmp>=64) ? 0x1<<(tmp-64) : 0x00;
     pat.wd    = (((uint64_t)random()&0x3ffff)<<32) + (uint64_t)random();
-    pat.wvpn  = random() & 0x3fffffff;
-    pat.svpn  = random() & 0x3fffffff;
     pat.wen   = random()&0x1;
-    pat.sen   = random()&0x1;
+    pat.wvpn  = random() & 0x3fffffff;
+    if(random() % 7 == 0){
+      pat.svpn = random() & 0x3fffffff;
+    } else {
+      pat.svpn = cambtb.get_svpn( random()%96 );
+    }
 
     if( cambtb.operate( pat.sen, pat.svpn, pat.valid[0], pat.valid[1], pat.valid[2],
           pat.wen, pat.addr[0], pat.addr[1], pat.addr[2], pat.wd, pat.wvpn) ){
@@ -749,6 +755,7 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
       gld.hit   = cambtb.get_hit();
       //write_pattern(i, pat);
       //write_golden( i, gld);
+      btbcam_print_vec( i, pat, gld );
       write_patgld(i, pat, gld);
       i++;
     }

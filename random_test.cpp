@@ -21,7 +21,7 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define TEST_TIMES 1000
+#define TEST_TIMES 20
 
 extern unsigned int str2num(unsigned char *s);
 extern int pat_cnt;
@@ -110,7 +110,7 @@ bool gs_memory_initial(
 
   printf("  BTBCAM_1W1S Initial Stage...\n");
   index = 0;
-  index = btbcam_memset(index, 0x00ull, 0x00);
+  index = btbcam_memset2(index, 0x00ull, 0x00);
   index = btbcam_search(index, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3fffffffffffull, false);
   tb_start(BTBCAM_1W1S_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);

@@ -950,6 +950,19 @@ bool gs_cam_btb_30x96_1w1s::memset( uint32_t vpn, uint64_t data ){
   return true;
 }
 
+bool gs_cam_btb_30x96_1w1s::memset2( uint32_t vpn, uint64_t data ){
+  for(int i=0; i<96; i++){
+    this->cam[i] = (vpn+i)&0x3ffffffful;
+    this->ram[i] = (data+i)&0x00003fffffffffffull;
+  }
+  return true;
+}
+
+uint32_t gs_cam_btb_30x96_1w1s::get_svpn(const uint8_t addr){
+  assert( addr < 96 );
+  return this->cam[addr];
+}
+
 bool gs_cam_btb_30x96_1w1s::write(){
   return false;
 }

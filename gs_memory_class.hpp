@@ -210,6 +210,8 @@ class gs_cam_btb_30x96_1w1s : public gs_memory{
         const bool we, const uint32_t addr31_00, const uint32_t addr63_32,
         const uint32_t addr95_64, const uint64_t data, const uint32_t wvpn );
     bool memset(const uint32_t vpn=0x00ull, const uint64_t data=0x00ull);
+    bool memset2(const uint32_t vpn=0x00ull, const uint64_t data=0x00ull);
+    uint32_t get_svpn(const uint8_t addr=0x00);
     bool write();
     bool read(const uint8_t addr=0x00);
     uint64_t get_out();
