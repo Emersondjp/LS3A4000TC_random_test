@@ -148,6 +148,7 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
   };
 
   // Start test
+  bool pass_flag=true;
   uint32_t st=0;
   // Testing REGFILE_8W6R_V
   printf("\n\nStart testing REGFILE_8W6R_V ...\n");
@@ -176,7 +177,7 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing REGFILE_8W6R_H
   printf("\n\nStart testing REGFILE_8W6R_H ...\n");
@@ -205,9 +206,9 @@ bool randomTest_8w6r( gs_regfile_128x64_8sw6sr & rf86 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
-  return true;
+  return pass_flag;
 }
 
 int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
@@ -276,6 +277,7 @@ int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
 
   // Start test
   uint32_t st=0;
+  bool pass_flag = true;
   // Testing REGFILE_4W4R_V
   printf("\n\nStart testing REGFILE_4W4R_V ...\n");
   tb_start(REGFILE_4W4R_V, ONCE_TEST_MAX-1);
@@ -303,7 +305,7 @@ int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing REGFILE_4W4R_H
   printf("\n\nStart testing REGFILE_4W4R_H ...\n");
@@ -332,9 +334,9 @@ int randomTest_4w4r( gs_regfile_128x64_4sw4sr & rf44 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
-  return true;
+  return pass_flag;
 }
 
 bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
@@ -411,6 +413,7 @@ bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
 
   // Start test
   uint32_t st=0;
+  bool pass_flag = true;
   // Testing CP0Q_RAM_OLD_V
   printf("\n\nStart testing CP0Q_RAM_OLD_V ...\n");
   tb_start(CP0Q_RAM_OLD_V, ONCE_TEST_MAX-1);
@@ -438,7 +441,7 @@ bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing CP0Q_RAM_OLD_H
   printf("\n\nStart testing CP0Q_RAM_OLD_H ...\n");
@@ -467,9 +470,9 @@ bool randomTest_3w5r( gs_cp0q_ram_64x128_3sw5sr & cp35 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
-  return true;
+  return pass_flag;
 }
 
 bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
@@ -545,6 +548,7 @@ bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
 
   // Start test
   uint32_t st=0;
+  bool pass_flag = true;
   // Testing CP0Q_RAM_V
   printf("\n\nStart testing CP0Q_RAM_V ...\n");
   tb_start(CP0Q_RAM_V, ONCE_TEST_MAX-1);
@@ -572,7 +576,7 @@ bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing CP0Q_RAM_H
   printf("\n\nStart testing CP0Q_RAM_H ...\n");
@@ -601,7 +605,7 @@ bool randomTest_2w5r( gs_cp0q_ram_48x64_2sw5sr & cp25 ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   return true;
 }
@@ -675,6 +679,7 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
 
   // Start test
   uint32_t st=0;
+  bool pass_flag = true;
   // Testing CAM_64X64_V
   printf("\n\nStart testing CAM_64X64_V ...\n");
   tb_start(CAM_64X64_V, ONCE_TEST_MAX-1);
@@ -702,7 +707,7 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing CAM_64X64_H
   printf("\n\nStart testing CAM_64X64_H ...\n");
@@ -731,9 +736,9 @@ bool randomTest_cam464v( gs_cam_464v_64x64_1wrs & cam464v ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
-  return true;
+  return pass_flag;
 }
 
 bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
@@ -788,6 +793,7 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
 
   // Start test
   uint32_t st=0;
+  bool pass_flag = true;
   // Testing BTBCAM_1W1S_V
   printf("\n\nStart testing BTBCAM_1W1S_V ...\n");
   tb_start(BTBCAM_1W1S_V, ONCE_TEST_MAX-1);
@@ -815,7 +821,7 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
   // Testing BTBCAM_1W1S_H
   printf("\n\nStart testing BTBCAM_1W1S_H ...\n");
@@ -844,8 +850,8 @@ bool randomTest_cambtb( gs_cam_btb_30x96_1w1s & cambtb ){
   }
 #endif
   printf("Done, test %s\n", st&0x02 ? "FAILED":"PASSED");
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
 
-  return true;
+  return pass_flag;
 }
 

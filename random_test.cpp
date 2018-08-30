@@ -21,7 +21,7 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define TEST_TIMES 500
+#define TEST_TIMES 5000
 
 extern unsigned int str2num(unsigned char *s);
 extern int pat_cnt;
@@ -36,6 +36,7 @@ bool gs_memory_initial(
     gs_cam_btb_30x96_1w1s& cambtb){
   // Initial all gs_memory
 
+  bool pass_flag = true;
   printf("In Initial Stage...\n");
   // Begin initialization of virtual memory
   rf86.memset(0x00ull);
@@ -54,10 +55,10 @@ bool gs_memory_initial(
   index = rf86_read(index, 0x00, 0x00ull);
   tb_start(REGFILE_8W6R_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(REGFILE_8W6R_V, index-1, 0xf0000000);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("  REGFILE_4W4R Initial Stage...\n");
@@ -66,10 +67,10 @@ bool gs_memory_initial(
   index = rf44_read(index, 0x00, 0x00ull);
   tb_start(REGFILE_4W4R_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(REGFILE_4W4R_V, index-1, 0xf0000000);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("  CP0Q_RAM_OLD Initial Stage...\n");
@@ -78,10 +79,10 @@ bool gs_memory_initial(
   index = cp35_read(index, 0x00, 0x00ull, 0);
   tb_start(CP0Q_RAM_OLD_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(CP0Q_RAM_OLD_V, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("  CP0Q_RAM Initial Stage...\n");
@@ -90,10 +91,10 @@ bool gs_memory_initial(
   index = cp25_read(index, 0, 0x00ull);
   tb_start(CP0Q_RAM_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(CP0Q_RAM_V, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("  CAM_64X64 Initial Stage...\n");
@@ -102,10 +103,10 @@ bool gs_memory_initial(
   index = cam464v_read(index, 63, 0x00ull);
   tb_start(CAM_64X64_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(CAM_64X64_V, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("  BTBCAM_1W1S Initial Stage...\n");
@@ -114,15 +115,15 @@ bool gs_memory_initial(
   index = btbcam_search(index, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3fffffffffffull, false);
   tb_start(BTBCAM_1W1S_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   tb_start(BTBCAM_1W1S_V, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
-  if(!tb_clear()) return false;
+  if(!tb_clear()) pass_flag = false;
   fflush(stdout);
 
   printf("End of Initial Stage...\n\n");
   // End initialization of testchip
-  return true;
+  return pass_flag;
 }
 
 int main(int argc, char* argv[])
