@@ -15,7 +15,7 @@ int btbcam_operate( int index, uint8_t sen=0, uint32_t svpn=0,
    * cmp_mask is determind by wen/sen
    */
 
-int btbcam_write( int index, uint8_t addr, uint64_t wd, uint32_t wvpn );
+int btbcam_write( int index, uint8_t addr=0x00, uint64_t wd=0x00, uint32_t wvpn=0x00 );
 /*
  * Write data into btb_cam
  * index : 0~1024, entry number of 1024 memory

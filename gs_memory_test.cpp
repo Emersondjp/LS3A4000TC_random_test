@@ -16,7 +16,7 @@
 #include "cam464v_function.hpp"
 #include "btbcam_function.hpp"
 
-#define ONCE_TEST_MAX 100 // Need < 1024
+#define ONCE_TEST_MAX 1000 // Need < 1024
 
 int pat_cnt=0;
 int gld_cnt=0;

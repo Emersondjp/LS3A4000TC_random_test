@@ -44,7 +44,7 @@ bool gs_memory_initial(
   cp35.memset(0xffff, 0x00ull, 0x00ull);
   cp25.memset(0x00);
   cam464v.memset(0x00, 0x00, 0x00, false, 0x00);
-  cambtb.memset(0x00, 0x00);
+  cambtb.memset2(0x00, 0x00);
   // End initialization of virtual memory
 
   // Begin initialization of testchip
@@ -111,7 +111,7 @@ bool gs_memory_initial(
 
   printf("  BTBCAM_1W1S Initial Stage...\n");
   index = 0;
-  index = btbcam_memset2(index, 0x00ull, 0x00);
+  index = btbcam_memset2(index, 0x00, 0x00ull);
   index = btbcam_search(index, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3fffffffffffull, false);
   tb_start(BTBCAM_1W1S_H, index-1);
   while(((st=status_read()) & 0x01) == 0) usleep(10);
@@ -128,6 +128,12 @@ bool gs_memory_initial(
 
 int main(int argc, char* argv[])
 {
+#ifdef NO_HARDWARE
+  printf("**Mention**: This program will run without hardware...\n");
+  printf("Press any key to continue...\n");
+  getchar();
+
+#endif
   uint32_t st;
   sys_Init();
   cfg_write(0x03); // cpu off, reset assert
